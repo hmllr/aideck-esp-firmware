@@ -35,6 +35,12 @@ Then, to flash the ESP using a JTAG, use:
 docker run --rm -it -v $PWD:/module/ --device /dev/ttyUSB0 --privileged -P bitcraze/builder /bin/bash -c "openocd -f interface/ftdi/olimex-arm-usb-tiny-h.cfg -f board/esp-wroom-32.cfg -c 'adapter_khz 20000' -c 'program_esp build/bootloader/bootloader.bin 0x1000 verify' -c 'program_esp build/aideck_esp.bin 0x10000 verify reset exit'"
 ```
 
+In case it is a new chip you also need to flash the partition table. Also some debugging adapters might require a lower clock speed.
+
+```
+sudo docker run --rm -it -v $PWD:/module/ --device /dev/ttyUSB0 --privileged -P bitcraze/builder /bin/bash -c "openocd -f interface/ftdi/olimex-arm-usb-ocd-h.cfg -f board/esp-wroom-32.cfg -c 'adapter_khz 1000' -c 'program_esp build/partitions_singleapp.bin 0x8000 verify' -c 'program_esp build/bootloader/bootloader.bin 0x1000 verify' -c 'program_esp build/aideck_esp.bin 0x10000 verify reset exit'"
+```
+
 ### Flash using the cfloader
 
 A binary can be flashed to the ESP via a Crazyradio using the [cfloader](https://www.bitcraze.io/documentation/repository/crazyflie-clients-python/master/functional-areas/cfloader/)
